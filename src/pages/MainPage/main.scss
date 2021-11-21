@@ -1,0 +1,13 @@
+.main__container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background-color: #e4f0fc;
+  height: 100vh;
+  padding: 2px 120px;
+}
+
+.main__container h1 {
+  align-self: flex-start;
+}

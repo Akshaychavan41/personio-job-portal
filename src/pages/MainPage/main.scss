@@ -11,3 +11,32 @@
 .main__container h1 {
   align-self: flex-start;
 }
+
+.main__container {
+  .table__container {
+    .waiting {
+      color: #ff8d36;
+      background-color: #fef2e5;
+      border-radius: 4px;
+      ::before {
+        background-color: #ff9849;
+      }
+    }
+    .approved {
+      color: #31afa3;
+      background-color: #effdfd;
+      border-radius: 4px;
+      ::before {
+        background-color: #1ac1b1;
+      }
+    }
+    .rejected {
+      color: #c63233;
+      background-color: #fdeded;
+      border-radius: 4px;
+      ::before {
+        background-color: #c63233;
+      }
+    }
+  }
+}

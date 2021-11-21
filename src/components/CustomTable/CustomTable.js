@@ -219,7 +219,7 @@ const CustomTable = ({
         className={`${classes.cell} MuiTypography-root jss247 MuiTypography-subtitle1`}
         style={column.style || {}}
       >
-        {value}
+        {column?.cell ? column.cell(value) : value}
       </div>
     );
   };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CustomTable from "../../components/CustomTable/CustomTable";
 import { useQueryParam, StringParam } from "use-query-params";
 import { getCandidatesList } from "../../services/main.service";
-import { getUrlSearchParam } from "../../utils/helper";
+import { calculateAge, getUrlSearchParam } from "../../utils/helper";
 import "./main.scss";
 function MainPage(props) {
   const [pageData, setPageData] = useState();
@@ -51,6 +51,18 @@ function MainPage(props) {
     setSortBy(obj.sortType || undefined);
     setSortOrder(obj.sortOrder || undefined);
   };
+
+  const AgeCell = (props) => {
+    return calculateAge(props);
+  };
+  const StatusCell = (props) => {
+    return (
+      <p style={{ margin: "0px", padding: "4px" }} className={props}>
+        {props}
+      </p>
+    );
+  };
+
   const columnsList = [
     {
       name: "Name",
@@ -75,6 +87,7 @@ function MainPage(props) {
         width: "100px",
         textAlign: "left",
       },
+      cell: AgeCell,
     },
     {
       name: "Experience",
@@ -105,8 +118,8 @@ function MainPage(props) {
       accessor: "status",
       style: {
         width: "100px",
-        textAlign: "left",
       },
+      cell: StatusCell,
     },
   ];
 

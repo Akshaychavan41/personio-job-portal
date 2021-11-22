@@ -1,15 +1,8 @@
 import classes from "./CustomTable.module.scss";
 
-// import { ReactComponent as ErrorIcon } from "../../assets/icons/error.svg";
 import { ReactComponent as FilterIcon } from "../../assets/icons/filter.svg";
 import { ReactComponent as SortIcon } from "../../assets/icons/sort.svg";
-// import CustomSelect from "../../components/CustomSelect/CustomSelect";
-// import EditableCell from "../../components/EditableCell/EditableCell";
-// import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
-// import RippleLoader from "../../components/RippleLoader/RippleLoader";
-// import { calculateVariance } from "../../config/constants";
 
-// import { Box } from "@material-ui/core";
 import React, { useEffect, useState, createRef, useCallback } from "react";
 import GlobalFilter from "../GlobalFilter/GlobalFilter";
 import { Box } from "@material-ui/core";
@@ -28,11 +21,11 @@ const CustomTable = ({
   getFilterSortingOptions,
   initialValues,
   enableSearchFilter,
+  searchKey,
   ...rest
 }) => {
   const [localData, setLocalData] = useState([]);
   const [globalFilter, setGlobalFilter] = useState(initialValues.search || "");
-  const [pageNo, setPageNo] = useState(0);
   const [filterByColTypes, setFilterByColTypes] = useState();
   const [selectedFilterType, setSelectedFilterType] = useState(
     initialValues.filterType
@@ -53,60 +46,22 @@ const CustomTable = ({
     initialValues.sortOrder || 1
   );
   const tableEleRef = createRef();
-  const dataPerPage = 20;
-
-  const pushPageData = () => {
-    const startPos = pageNo * dataPerPage;
-    const endPos = startPos + dataPerPage;
-    let newArr = [];
-    if (sideData.length >= endPos) {
-      newArr = sideData.slice(startPos, endPos);
-    } else {
-      newArr = sideData.slice(startPos, sideData.length);
-    }
-    if (newArr.length !== 0) {
-      const tempLocalData = localData.concat(newArr);
-      setLocalData(tempLocalData);
-      setPageNo(pageNo + 1);
-    }
-  };
 
   const loadPageData = useCallback(() => {
-    setPageNo(0);
-    setLocalData([]);
-    const startPos = 0;
-    const endPos = startPos + dataPerPage;
-    let newArr = [];
-    if (sideData.length >= endPos) {
-      newArr = sideData.slice(startPos, endPos);
-    } else {
-      newArr = sideData.slice(startPos, sideData.length);
-    }
-    setLocalData(newArr);
+    setLocalData(sideData);
     setFilterByColTypes(
       columnsList.filter((col) => filterByColumns.includes(col.accessor))
     );
     setSortByColTypes(
       columnsList.filter((col) => sortByColumns.includes(col.accessor))
     );
-
-    setPageNo(1);
   }, [sideData]);
-
-  const scrollHandler = (event) => {
-    const percentageScrolled =
-      (event.target.scrollTop / event.target.scrollHeight) * 100;
-    if (percentageScrolled > 80) {
-      pushPageData();
-    }
-  };
 
   useEffect(() => {
     if (sideData) {
       if (tableEleRef && tableEleRef.current) {
         tableEleRef.current.scrollTop = 0;
       }
-      console.log(sideData);
       loadPageData();
     }
   }, [sideData, loadPageData]);
@@ -149,7 +104,7 @@ const CustomTable = ({
         let filteredData = [...sideData];
         if (globalFilter) {
           filteredData = filteredData.filter(
-            (item) => item.name.toLowerCase().indexOf(globalFilter) !== -1
+            (item) => item[searchKey].toLowerCase().indexOf(globalFilter) !== -1
           );
         }
         if (selectedFilterOptions) {
@@ -235,7 +190,7 @@ const CustomTable = ({
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
               className={classes.globalFilter}
-              placeholder={"Search by Name"}
+              placeholder={`Search by ${searchKey}`}
             />
           </div>
           <div className={`${classes["w-60"]} ${classes["custom-filter"]}`}>
@@ -316,24 +271,14 @@ const CustomTable = ({
       >
         <RippleLoader className={classes["loader"]} show={showTableLoader} />
         {!showTableLoader && (
-          <div
-            className={classes["table-body"]}
-            onScroll={scrollHandler}
-            ref={tableEleRef}
-          >
+          <div className={classes["table-body"]} ref={tableEleRef}>
             <div className={`${classes.row} ${classes.header}`}>
-              {generateHeaderColumns(0, 3)}
-              {generateHeaderColumns(3, columnsList.length)}
+              {generateHeaderColumns(0, columnsList.length)}
             </div>
 
             {localData.map((ele, index) => {
               return (
-                <div
-                  key={index}
-                  className={`${classes.row} ${
-                    ele.shouldHighlight ? classes.highlight : ""
-                  }`}
-                >
+                <div key={index} className={`${classes.row}`}>
                   {columnsList.map((col) => {
                     return generateRegularColumns(ele[col.accessor], col);
                   })}

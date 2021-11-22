@@ -12,7 +12,7 @@ export function calculateAge(birthDate) {
 
   if (
     otherDate.getMonth() < birthDate.getMonth() ||
-    (otherDate.getMonth() == birthDate.getMonth() &&
+    (otherDate.getMonth() === birthDate.getMonth() &&
       otherDate.getDate() < birthDate.getDate())
   ) {
     years--;

@@ -142,6 +142,7 @@ function MainPage(props) {
           ]}
           showTableLoader={showTableLoader}
           getFilterSortingOptions={getFilterSortingOptions}
+          searchKey={"name"}
           initialValues={{
             search: search,
             sortBy: sortBy,
